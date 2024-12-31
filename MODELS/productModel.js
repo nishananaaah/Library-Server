@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
 const productSchema =  new mongoose.Schema({
-     name :{
+     name:{
         type:String,
         required:true
+     },
+     author:{
+      type:String,
+      required:true
      },
      description :{
         type:String,
@@ -23,7 +27,7 @@ const productSchema =  new mongoose.Schema({
      },
      availablity:{
         type : Boolean,
-        default:false
+        default:true
      },
      isDeleted :{
         type:Boolean,

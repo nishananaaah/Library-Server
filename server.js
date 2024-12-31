@@ -1,12 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
-import adminRoute from "./ROUTES/adminRoute.js"
+import adminRoute from "./ROUTES/adminRoute.js";
+import authRoute from "./ROUTES/authenticationRoute.js"
+import productRoute from "./ROUTES/productRoute.js"
 
 const app = express();
 const port = 3000;
 
 app.use(express.json())
+app.use("/api/users",authRoute)
 app.use("/api/admin",adminRoute)
+app.use("/api/users",productRoute)
 
 mongoose.connect('mongodb://localhost:27017/library')
 .then(()=>console.log("DB Conneted"))

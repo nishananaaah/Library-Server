@@ -26,10 +26,7 @@ const userSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Cart"
     }],
-    borrow:[{  //orders
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Borrow"
-    }],
+    borrow: [{ type: mongoose.Schema.Types.ObjectId, ref: "Borrow" }],
     wishlist:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Wishlist",
