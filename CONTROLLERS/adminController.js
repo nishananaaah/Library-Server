@@ -30,21 +30,51 @@ export const viewAllusers = async (req,res,next)=>{
 }
 
 //viewuserbyid
-// export const adminviewUserbyId = async(req,res,next)=>{
-//     const {id} = req.params
+export const adminviewUserbyid=async(req,res,next)=>{
+    const {userId}=req.params;
 
-//     const user = await User.findById(id).populate({
-//         path: "borrow",
-//         populate: { path: "productId" },
-//     });
-    
-//     console.log(user)
+    // const user=await User.findById(id).populate({
+    //     path:'orders',
+    //     populate:{path:'productId'}
+    // })
+    const user = await User.findById(userId)
 
-//     if(!user){
-//          return res.status(404).json({message:"User not found"})
-//     }
-//     res.status(200).json(user)
+    if(!user){
+        return res.status(404).json({message:'user not found'})
+    }
 
-// }
+    res.status(200).json(user)
+}
 
+//Viewbyusername
+export const adminviewbyUsername = async (req,res,next)=>{
+    const {username} = req.params
+    const user=await User.find({username:{$regex:new RegExp(username,'i')}}).select('username');
+    if(!user){
+        res.status(404).json({message:"Cannot find username"})
+    }
+    res.status(200).json(user)
+}
+
+//Blockuser
+export const adminBlockuser = async(req,res,next)=>{
+    const {userId} = req.params;
+    const userblocked =  User.findByIdAndUpdate({_id:userId},{$set:{isDeleted:true}});
+
+    if(!userblocked){
+        res.status(404).json({message:"User not found"})
+    }
+      res.status(200).json({message:"User blocked successfully"})
+}
+
+//Unblockuser
+export const adminUnblockuser = async(req,res,next)=>{
+    const {userId} = req.params;
+    const userunblocked = User.findByIdAndUpdate({_id:userId},{$set:{isDeleted:false}})
+
+    if(!userunblocked){
+        res.status(404).json({message:"User not found"})
+    }
+    res.status(200).json({message:"User unblocked successfully"})
+}
  
