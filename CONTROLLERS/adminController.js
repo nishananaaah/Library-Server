@@ -8,7 +8,7 @@ config();
 //admin login 
 export default async (req, res, next) => {
     const { email, password } = req.body;
-    console.log(email)
+    console.log(email,'hipooooo')
    
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
         const tocken = jwt.sign({ email }, process.env.ADMIN_SECRET_KEY);

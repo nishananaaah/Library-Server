@@ -3,6 +3,7 @@ import  login, { adminBlockuser, adminUnblockuser, adminviewbyUsername, adminvie
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
 import { addProduct, admindeleteProductbyid, admineditProduct, adminproductbycategery, adminviewProductbyid } from "../CONTROLLERS/adminproductController.js";
 import { viewproduct } from "../CONTROLLERS/productController.js";
+import route from "./productRoute.js";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.put('/user/unblock/:userId',TryCatchMiddleware(adminUnblockuser))
 
 
 //Products
+
 router.post('/addProduct',TryCatchMiddleware(addProduct))
 router.get('/products',TryCatchMiddleware(viewproduct))
 router.get('/products/:productbyId',TryCatchMiddleware(adminviewProductbyid))

@@ -6,7 +6,8 @@ const route = express.Router();
 
 route.get('/products',TryCatchMiddleware(viewproduct));
 // route.post('/addproduct',TryCatchMiddleware(addProduct));
-route.get('/products/:id',TryCatchMiddleware(productByid))
+route.get('/products/:id',TryCatchMiddleware(productByid));
+
 
 export default route
 
