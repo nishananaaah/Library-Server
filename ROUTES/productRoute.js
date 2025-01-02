@@ -4,9 +4,12 @@ import { productByid, viewproduct } from "../CONTROLLERS/productController.js";
 
 const route = express.Router();
 
+//Products
 route.get('/products',TryCatchMiddleware(viewproduct));
-// route.post('/addproduct',TryCatchMiddleware(addProduct));
 route.get('/products/:id',TryCatchMiddleware(productByid));
+
+//Payment
+
 
 
 export default route
