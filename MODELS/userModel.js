@@ -22,15 +22,15 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
          default:false
       },
-      cart:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Cart"
-    }],
-    borrow: [{ type: mongoose.Schema.Types.ObjectId, ref: "Borrow" }],
-    wishlist:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Wishlist",
-    }],
+    //   cart:[{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:"Cart"
+    // }],
+    // borrow: [{ type: mongoose.Schema.Types.ObjectId, ref: "Borrow" }],
+    // wishlist:[{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:"Wishlist",
+    // }],
 },{timestamps:true})//Adds createdAt and updatedAt fields automatically)
 
 const User = mongoose.model("User",userSchema)
