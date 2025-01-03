@@ -1,5 +1,8 @@
+import Memeber from "../MODELS/membersModel.js"
 import Products from "../MODELS/productModel.js"
 // import User from "../MODELS/userModel.js";
+import Borrow from "../MODELS/borrowModel.js"
+import User from "../MODELS/userModel.js"
 
 export const viewproduct = async (req,res)=>{
 
@@ -47,10 +50,49 @@ export const viewproduct = async (req,res)=>{
  //Productbycategory
  export const productbyCategory = async(req,res,next)=>{
     const {categoryname} = req.params
-    const product=await products.find({
+    const product=await Products.find({
         $or:[
             {category:{$regex:new RegExp(categoryname,'i')}},
             {title:{$regex:new RegExp(categoryname,'i')}}
         ]
     })    
  }
+
+ export const borrowbyId = async (req, res, next) => {
+    const { userId,productId } = req.params; // Extract userId and productId from params
+
+    try {
+        const product = await Products.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const user = await Memeber.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Take Membership" });
+        }
+
+        // Create a new Borrow entry
+        const newOrder = new Borrow({
+            userId: user._id,
+            productId: product._id,
+            totalPrice: product.price, // Assuming product has a price field
+            status: "borrowed",
+        });
+
+        await newOrder.save();
+        return res.status(200).json({ message: "Product borrowed successfully" });
+    } catch (error) {
+        console.error("Error in borrowing product:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+//Borrowgetbyid
+export const admingetborrows = async(req,res,next)=>{
+    const borrows = await Borrow.find();
+    if(!borrows){
+       return res.status(404).json({message:"Borrows not found"})
+    }
+    res.status(200).json(borrows)
+}

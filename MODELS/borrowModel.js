@@ -14,23 +14,16 @@ const borrowSchema = new mongoose.Schema({
         required : true,
         default : Date.now
     },
-    orderTime : {
+    BorrowTime : {
         type : String,
         required : true ,
         default : new Date().toTimeString()
     },
-    orderId :{
-        type : String,
-        required : true 
-    },
-    totalPrice :{
+    MembershipPrice :{
         type : Number ,
         required : true
-    },
-    paymentId :{
-        type :String,
-        required : true
-    },
+    }
+  
 
 });
 

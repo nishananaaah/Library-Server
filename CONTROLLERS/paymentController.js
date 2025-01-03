@@ -120,7 +120,7 @@ export const payment = async (req, res) => {
 
   
 //verify payment
-export const verifyPayment = async (req, res) => {
+export const memberPayment = async (req, res) => {
     try {
       const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
   
@@ -163,7 +163,7 @@ export const verifyPayment = async (req, res) => {
     //   user.orders.push(newOrder);
       await user.save();
   
-      res.status(200).json({ message: "Payment verified successfully" });
+      res.status(200).json({ message: "Membership has successfully activated" });
     } catch (error) {
       console.error("Verify Payment Error:", error);
       res.status(500).json({ message: "Internal server error", error: error.message });

@@ -1,6 +1,7 @@
 import {config} from "dotenv"
 import jwt from "jsonwebtoken";
 import User from "../MODELS/userModel.js";
+import Memeber from "../MODELS/membersModel.js";
 
 
 config();
@@ -78,3 +79,12 @@ export const adminUnblockuser = async(req,res,next)=>{
     res.status(200).json({message:"User unblocked successfully"})
 }
  
+//View allmembers
+export const adminviewallMmebers = async(req,res,next)=>{
+    const members = await Memeber.find()
+
+    if(!members){
+        res.status(404).json({error:"Members not found"})
+    }
+    res.status(200).json(members)
+}

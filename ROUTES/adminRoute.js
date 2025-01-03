@@ -1,8 +1,8 @@
 import express from "express";
-import  login, { adminBlockuser, adminUnblockuser, adminviewbyUsername, adminviewUserbyid, viewAllusers }  from "../CONTROLLERS/adminController.js";
+import  login, { adminBlockuser, adminUnblockuser, adminviewallMmebers, adminviewbyUsername, adminviewUserbyid, viewAllusers }  from "../CONTROLLERS/adminController.js";
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
 import { addProduct, admindeleteProductbyid, admineditProduct, adminproductbycategery, adminviewProductbyid } from "../CONTROLLERS/adminproductController.js";
-import { viewproduct } from "../CONTROLLERS/productController.js";
+import { admingetborrows, viewproduct } from "../CONTROLLERS/productController.js";
 import route from "./productRoute.js";
 
 const router = express.Router();
@@ -17,6 +17,9 @@ router.get('/user/findname/:username',TryCatchMiddleware(adminviewbyUsername))
 router.put('/user/block/:userId',TryCatchMiddleware(adminBlockuser))
 router.put('/user/unblock/:userId',TryCatchMiddleware(adminUnblockuser))
 
+//Members
+router.get('/viewAllmembers',TryCatchMiddleware(adminviewallMmebers))
+
 
 
 //Products
@@ -27,6 +30,9 @@ router.get('/products/:productbyId',TryCatchMiddleware(adminviewProductbyid))
 router.get('/products/category/:categoryname',TryCatchMiddleware(adminproductbycategery))
 router.put('/products/edit/:productId',TryCatchMiddleware(admineditProduct))
 router.delete('/products/delete/:productId',TryCatchMiddleware(admindeleteProductbyid))
+
+//Borrows
+router.get('/viewAllborrows',TryCatchMiddleware(admingetborrows))
 
 
 
