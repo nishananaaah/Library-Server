@@ -3,6 +3,7 @@ import Products from "../MODELS/productModel.js"
 // import User from "../MODELS/userModel.js";
 import Borrow from "../MODELS/borrowModel.js"
 import User from "../MODELS/userModel.js"
+import Review from "../MODELS/reviewModel.js"
 
 export const viewproduct = async (req,res)=>{
 
@@ -96,3 +97,26 @@ export const admingetborrows = async(req,res,next)=>{
     }
     res.status(200).json(borrows)
 }
+
+//Review of the product
+export const reviewsofproduct = async (req, res, next) => {
+    try {
+      const { content } = req.body; // Content from the request body
+     const  {productId} =req.params
+    const borrows = await Borrow.findById(productId);
+    if(!borrows){
+        res.status(404).json({message:"not in borrow list"})
+    }
+    const newreviews = new Review({
+        content: content,
+        status: "review",
+    })
+    await newreviews.save();
+    return res.status(200).json({ message: "Product review successfully" });
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ message: "Internal server error" });
+      next(error); // Pass the error to the next middleware
+    }
+  };
+  

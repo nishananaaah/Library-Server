@@ -1,6 +1,6 @@
 import express from "express";
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
-import { borrowbyId, productByid, viewproduct } from "../CONTROLLERS/productController.js";
+import { borrowbyId, productByid, reviewsofproduct, viewproduct } from "../CONTROLLERS/productController.js";
 import { memberPayment, payment, userMembership} from "../CONTROLLERS/paymentController.js";
 
 const route = express.Router();
@@ -19,6 +19,9 @@ route.post('/membership',userMembership)
 
 //Borrows
 route.post('/:userId/borrow/:productId',TryCatchMiddleware(borrowbyId))
+
+//Reviews
+route.post('/:productId/review',TryCatchMiddleware(reviewsofproduct))
 
 
 

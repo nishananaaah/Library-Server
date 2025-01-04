@@ -7,7 +7,7 @@ const reviewSchema = new mongoose.Schema({
         required : true
     },
     postedDate : {
-        type:Date,
+        type:String,
         required : true,
         default : Date.now
     },
