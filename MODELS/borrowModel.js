@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const borrowSchema = new mongoose.Schema({
-  
+
  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     startDate :{
@@ -19,10 +19,10 @@ const borrowSchema = new mongoose.Schema({
         required : true ,
         default : new Date().toTimeString()
     },
-    MembershipPrice :{
-        type : Number ,
-        required : true
-    }
+    // MembershipPrice :{
+    //     type : Number ,
+    //     required : true
+    // }
   
 
 });
