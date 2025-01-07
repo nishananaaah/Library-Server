@@ -33,6 +33,8 @@ router.delete('/products/delete/:productId',TryCatchMiddleware(admindeleteProduc
 
 //Borrows
 router.get('/viewAllborrows',TryCatchMiddleware(admingetborrows))
+//Reviews
+router.get('/reviews',TryCatchMiddleware())
 
 
 

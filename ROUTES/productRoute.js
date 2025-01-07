@@ -12,7 +12,7 @@ route.get('/products/:id',TryCatchMiddleware(productByid));
 
 //Payment Memebrship
 route.post('/payment/:id',TryCatchMiddleware(payment))
-route.post('/memberpayment',TryCatchMiddleware(memberPayment))
+route.post('/memberpayment',TryCatchMiddleware(memberPayment))//verify payment
 
 //Membership
 route.post('/membership',userMembership)
@@ -21,7 +21,7 @@ route.post('/membership',userMembership)
 route.post('/:userId/borrow/:productId',TryCatchMiddleware(borrowbyId))
 
 //Reviews
-route.post('/:productId/review',TryCatchMiddleware(reviewsofproduct))
+route.post('/:userId/review/:productId',TryCatchMiddleware(reviewsofproduct))
 
 
 

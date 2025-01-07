@@ -91,8 +91,10 @@ export const viewproduct = async (req,res)=>{
 
 //Borrowgetbyid
 export const admingetborrows = async(req,res,next)=>{
-    const borrows = await Borrow.find();
-    if(!borrows){
+    const borrows = await Borrow.find().populate({
+        path:'productId'
+    });
+    if(!borrows.length===0){
        return res.status(404).json({message:"Borrows not found"})
     }
     res.status(200).json(borrows)
@@ -100,23 +102,34 @@ export const admingetborrows = async(req,res,next)=>{
 
 //Review of the product
 export const reviewsofproduct = async (req, res, next) => {
+    const {contend} = req.body
+    const { userId,productId } = req.params; // Extract userId and productId from params
+
     try {
-      const { content } = req.body; // Content from the request body
-     const  {productId} =req.params
-    const borrows = await Borrow.findById(productId);
-    if(!borrows){
-        res.status(404).json({message:"not in borrow list"})
-    }
-    const newreviews = new Review({
-        content: content,
-        status: "review",
-    })
-    await newreviews.save();
-    return res.status(200).json({ message: "Product review successfully" });
+        const product = await Products.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        const user = await Memeber.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Take Membership" });
+        }
+
+        // Create a new Borrow entry
+        const newReview = new Review({
+            userId: user._id,
+            productId: product._id,
+            contend:contend.contend,
+           
+            // Assuming product has a price field
+            status: "borrowed",
+        });
+
+        await newReview.save();
+        return res.status(200).json(newReview);
     } catch (error) {
-      console.error("Error fetching reviews:", error);
-      res.status(500).json({ message: "Internal server error" });
-      next(error); // Pass the error to the next middleware
+        console.error("Error in borrowing product:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-  };
-  
+};

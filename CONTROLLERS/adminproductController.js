@@ -121,3 +121,5 @@ export const admindeleteProductbyid = async (req,res,next)=>{
     }
     res.status(200).json({message:"Product deleted successfully"})
 }
+
+//getreviews

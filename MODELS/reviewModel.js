@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
-    userId :{
+    userId:{
         type : mongoose.Schema.ObjectId,
         ref : "User",
         required : true
@@ -11,10 +11,10 @@ const reviewSchema = new mongoose.Schema({
         required : true,
         default : Date.now
     },
-    content : {
-        type : String,
-        required : true
-    }
+    // content : {
+    //     type : String,
+    //     required : true
+    // }
 });
 const Review = mongoose.model("Review",reviewSchema);
 export default Review;
