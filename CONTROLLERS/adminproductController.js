@@ -1,5 +1,6 @@
 import express from "express";
 import Products from "../MODELS/productModel.js";
+import Review from "../MODELS/reviewModel.js";
 const app = express();
 app.use(express.json())
 
@@ -123,3 +124,10 @@ export const admindeleteProductbyid = async (req,res,next)=>{
 }
 
 //getreviews
+export const admincangetReview = async(req,res,next)=>{
+    const reviews = await Review.find();
+    if(!reviews){
+        res.status(404).json({message:"Reviews not found"})
+    }
+    res.status(200).json(reviews)
+}

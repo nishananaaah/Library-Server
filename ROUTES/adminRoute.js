@@ -1,7 +1,7 @@
 import express from "express";
 import  login, { adminBlockuser, adminUnblockuser, adminviewallMmebers, adminviewbyUsername, adminviewUserbyid, viewAllusers }  from "../CONTROLLERS/adminController.js";
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
-import { addProduct, admindeleteProductbyid, admineditProduct, adminproductbycategery, adminviewProductbyid } from "../CONTROLLERS/adminproductController.js";
+import { addProduct, admincangetReview, admindeleteProductbyid, admineditProduct, adminproductbycategery, adminviewProductbyid } from "../CONTROLLERS/adminproductController.js";
 import { admingetborrows, viewproduct } from "../CONTROLLERS/productController.js";
 import route from "./productRoute.js";
 
@@ -34,7 +34,7 @@ router.delete('/products/delete/:productId',TryCatchMiddleware(admindeleteProduc
 //Borrows
 router.get('/viewAllborrows',TryCatchMiddleware(admingetborrows))
 //Reviews
-router.get('/reviews',TryCatchMiddleware())
+router.get('/reviews',TryCatchMiddleware(admincangetReview))
 
 
 
