@@ -5,7 +5,7 @@ const memberSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
    
 
-MembershipPrice :{
+totalPrice :{
     type : Number ,
     required : true
 },
