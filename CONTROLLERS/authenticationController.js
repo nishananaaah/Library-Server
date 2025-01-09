@@ -10,7 +10,7 @@ export const register = async (req,res,next)=>{
     if(error){
       return  res.status(400).json({message:"Found validation error"})
     }
-    const {username,password,email} = value
+    const { username, email, password } = value;
     try {
         const isExistinguser = await User.findOne({email:email})
         if(isExistinguser){
@@ -23,7 +23,8 @@ export const register = async (req,res,next)=>{
            username:username,
            image:req.cloudinaryImageUrl,
            email:email,
-          password:hashedpassword
+           password:hashedpassword,
+       
         }) 
 
         await newuser.save()
