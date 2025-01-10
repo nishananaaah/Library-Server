@@ -4,6 +4,7 @@ import Products from "../MODELS/productModel.js"
 import Borrow from "../MODELS/borrowModel.js"
 import User from "../MODELS/userModel.js"
 import Review from "../MODELS/reviewModel.js"
+import Authors from "../MODELS/authorModel.js"
 
 export const viewproduct = async (req,res)=>{
 
@@ -56,7 +57,12 @@ export const viewproduct = async (req,res)=>{
             {category:{$regex:new RegExp(categoryname,'i')}},
             {title:{$regex:new RegExp(categoryname,'i')}}
         ]
-    })    
+    })   
+    
+    if(!product){
+        res.status(404).json({message:"Product not found by category"})
+    }
+       res.status(200).json(product)
  }
 
  export const borrowbyId = async (req, res, next) => {
@@ -133,3 +139,30 @@ export const reviewsofproduct = async (req, res, next) => {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
+
+//Add author 
+// export const addauthors =  async(req,res,next) =>{
+//     const authors = await req.body;
+//     if(!authors){
+//         res.status(403).json({message:"Error occured to add authors"})
+//     }
+    
+//     const newAuthors=new Authors({
+//      name:authors.name,
+//      age:authors.age,
+//      image:authors.image,
+//      category:authors.category,
+//     });
+//      await newAuthors.save()
+//      res.status(200).json({message:"Authors added successfully"})
+
+// }
+
+//View authors
+export const viewAuthors = async(req,res,next)=>{
+    const authors = await Authors.find();
+    if(!authors){
+        res.status(404).json({message:"Authors not found"})
+    }
+    res.status(200).json(authors)
+}
