@@ -9,7 +9,7 @@ import Authors from "../MODELS/authorModel.js"
 export const viewproduct = async (req,res)=>{
 
     const product = await Products.find()
-    console.log(product)
+   
 
     if(!product){
         res.status(404).json({message:"Unable to get product"})
