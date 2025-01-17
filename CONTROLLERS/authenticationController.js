@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req,res,next)=>{
     const {value,error} = userAuthjoi.validate(req.body)
+    console.log(error)
     if(error){
       return  res.status(400).json({message:"Found validation error"})
     }
@@ -45,6 +46,7 @@ export const login = async (req, res, next) => {
     try {
       // Check if user exists
       const isUservalid = await User.findOne({ email });
+      console.log(isUservalid,email)
       if (!isUservalid) {
         return res.status(404).json({ error: "User not found" });
       }

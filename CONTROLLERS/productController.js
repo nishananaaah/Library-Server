@@ -12,9 +12,9 @@ export const viewproduct = async (req,res)=>{
    
 
     if(!product){
-        res.status(404).json({message:"Unable to get product"})
+       return res.status(404).json({message:"Unable to get product"})
    }
-   res.status(200).json({status:"success",message:"Successfully fetched data",data:product})
+  return res.status(200).json({status:"success",message:"Successfully fetched data",data:product})
 
 }
 // //addproduct
@@ -44,9 +44,9 @@ export const viewproduct = async (req,res)=>{
     const productId = req.params.id
     const product = await Products.findById(productId)
     if(!product){
-        res.status(404).json({Error:"not found",message:"Product not found"})
+       return res.status(404).json({Error:"not found",message:"Product not found"})
     }
-    res.status(200).json(product)
+   return res.status(200).json(product)
  }
 
  //Productbycategory
@@ -60,23 +60,31 @@ export const viewproduct = async (req,res)=>{
     })   
     
     if(!product){
-        res.status(404).json({message:"Product not found by category"})
+       return  res.status(404).json({message:"Product not found by category"})
     }
-       res.status(200).json(product)
+      return  res.status(200).json(product)
  }
 
  export const borrowbyId = async (req, res, next) => {
-    const { userId,productId } = req.params; // Extract userId and productId from params
+    const { userId, productId } = req.params; // Extract userId and productId from params
 
     try {
+        // Check if product exists
         const product = await Products.findById(productId);
         if (!product) {
             return res.status(404).json({ message: "Product not found" });
         }
 
-        const user = await Memeber.findById(userId);
+        // Check if user is a member
+        const user = await Memeber.findOne({ userId: userId });
         if (!user) {
             return res.status(404).json({ message: "Take Membership" });
+        }
+
+        // Check if user exists
+        const users = await User.findById(userId);
+        if (!users) {
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Create a new Borrow entry
@@ -88,23 +96,49 @@ export const viewproduct = async (req,res)=>{
         });
 
         await newOrder.save();
+
+        // Update user borrow list
+        users.borrow.push(newOrder._id);
+        await users.save();
+
+        // Respond with success message
         return res.status(200).json({ message: "Product borrowed successfully" });
     } catch (error) {
         console.error("Error in borrowing product:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 
-//Borrowgetbyid
+
+//Borrowgetbyadmin
 export const admingetborrows = async(req,res,next)=>{
     const borrows = await Borrow.find().populate({
         path:'productId'
     });
-    if(!borrows.length===0){
+    if(borrows.length===0){
        return res.status(404).json({message:"Borrows not found"})
     }
-    res.status(200).json(borrows)
+      return  res.status(200).json(borrows)
 }
+
+//Borrowgetbyuser
+export const userGetborrows = async (req, res, next) => {
+    const { borrowId } = req.params;
+
+    try {
+        // Use 'populate' with the correct field name in the User schema
+        const userWithBorrows = await User.findById(borrowId).populate('borrow');
+
+        if (!userWithBorrows) {
+            return res.status(404).json({ message: "Borrow not found" });
+        }
+
+        return res.status(200).json(userWithBorrows);
+    } catch (error) {
+        console.error("Error fetching borrow details:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
 
 //Review of the product
 export const reviewsofproduct = async (req, res, next) => {
@@ -162,7 +196,48 @@ export const reviewsofproduct = async (req, res, next) => {
 export const viewAuthors = async(req,res,next)=>{
     const authors = await Authors.find();
     if(!authors){
-        res.status(404).json({message:"Authors not found"})
+      return   res.status(404).json({message:"Authors not found"})
     }
-    res.status(200).json(authors)
+   return res.status(200).json(authors)
+}
+
+//product search 
+export const productSearch = async(req,res,next)=>{
+    try {
+        const { query } = req.query; // Get the search query from the query string
+        const searchRegex = new RegExp(query, 'i'); // Create a case-insensitive regex
+    
+        const results = await Products.find({
+          $or: [
+            { name: searchRegex }, // Search in the name field
+            { category: searchRegex }, // Search in the category field
+          ],
+        });
+    
+       return   res.status(200).json(results);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error'});
+ }
+    
+}
+
+export const viewAllusers = async (req,res,next)=>{
+    const users = await User.find()
+
+    if(users.length==0){
+       return res.status(404).json({message:"No users in database"})
+    }
+   return res.status(200).json(users)
+}
+//userbyid
+export const userByid = async (req,res,next)=>{
+    const {userId} = req.params
+
+    const user  = await User.findById(userId);
+    if(!user){
+      return  res.status(404).json({message:"User not found"})
+    }
+   return res.status(200).json(user)
+
 }

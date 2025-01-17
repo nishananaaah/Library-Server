@@ -25,16 +25,12 @@ const userSchema = new mongoose.Schema({
       image:{
         type:String,
         required:false
-      }
-    //   cart:[{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:"Cart"
-    // }],
-    // borrow: [{ type: mongoose.Schema.Types.ObjectId, ref: "Borrow" }],
-    // wishlist:[{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:"Wishlist",
-    // }],
+      },
+    borrow:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Borrow"
+  }]
+   
 },{timestamps:true})//Adds createdAt and updatedAt fields automatically)
 
 const User = mongoose.model("User",userSchema)
