@@ -126,8 +126,14 @@ export const userGetborrows = async (req, res, next) => {
     const { borrowId } = req.params;
 
     try {
-        // Use 'populate' with the correct field name in the User schema
-        const userWithBorrows = await User.findById(borrowId).populate('borrow');
+        // Find the user by ID and populate the borrow array, including the productId field within each borrow
+        const userWithBorrows = await User.findById(borrowId)
+            .populate({
+                path: 'borrow', // Populate the borrow array
+                populate: {
+                    path: 'productId', // Populate the productId within each borrow
+                },
+            });
 
         if (!userWithBorrows) {
             return res.status(404).json({ message: "Borrow not found" });
@@ -139,6 +145,7 @@ export const userGetborrows = async (req, res, next) => {
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
+
 
 //Review of the product
 export const reviewsofproduct = async (req, res, next) => {
