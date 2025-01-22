@@ -113,7 +113,8 @@ export const viewproduct = async (req,res)=>{
 //Borrowgetbyadmin
 export const admingetborrows = async(req,res,next)=>{
     const borrows = await Borrow.find().populate({
-        path:'productId'
+        path:'productId',
+        
     });
     if(borrows.length===0){
        return res.status(404).json({message:"Borrows not found"})

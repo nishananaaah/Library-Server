@@ -81,10 +81,19 @@ export const adminUnblockuser = async(req,res,next)=>{
  
 //View allmembers
 export const adminviewallMmebers = async(req,res,next)=>{
-    const members = await Memeber.find()
-
-    if(!members){
-        res.status(404).json({error:"Members not found"})
-    }
-    res.status(200).json(members)
-}
+    try {
+        const members = await Memeber.find().populate({
+          path: 'userId',
+          select: 'name email role', // Adjust fields based on what you want to return
+        });
+    
+        if (!members || members.length === 0) {
+          return res.status(404).json({ error: "Members not found" });
+        }
+    
+        res.status(200).json(members);
+      } catch (error) {
+        console.error("Error fetching members:", error);
+        res.status(500).json({ error: "An error occurred while fetching members" });
+      }
+    };
