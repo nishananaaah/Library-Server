@@ -19,6 +19,7 @@ const borrowSchema = new mongoose.Schema({
         required : true ,
         default : new Date().toTimeString()
     },
+     status: { type: String, enum: ['borrowed', 'returned'], default: 'borrowed' },
     // MembershipPrice :{
     //     type : Number ,
     //     required : true

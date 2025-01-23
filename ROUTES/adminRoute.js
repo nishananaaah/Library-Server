@@ -4,6 +4,7 @@ import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
 import { addProduct, admincangetReview, admindeleteProductbyid, admineditProduct, adminproductbycategery, adminviewProductbyid } from "../CONTROLLERS/adminproductController.js";
 import { admingetborrows, viewproduct } from "../CONTROLLERS/productController.js";
 import route from "./productRoute.js";
+import { addMembership } from "../CONTROLLERS/membershipController.js";
 
 const router = express.Router();
 
@@ -37,5 +38,8 @@ router.get('/viewAllborrows',TryCatchMiddleware(admingetborrows))
 router.get('/reviews',TryCatchMiddleware(admincangetReview))
 
 // route.post('/addauthors',TryCatchMiddleware(addauthors))
+
+//addmembership
+router.post('/addmembership',TryCatchMiddleware(addMembership))
 
 export default router;

@@ -70,10 +70,16 @@ export const viewproduct = async (req,res)=>{
 
     try {
         // Check if product exists
-        const product = await Products.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
-        }
+        // Inside your borrowing route logic:
+const product = await Products.findById(productId);
+if (!product) {
+  return res.status(404).json({ message: "Product not found" });
+}
+
+// Update the product's borrowed status
+product.isBorrowed = true;
+await product.save();
+
 
         // Check if user is a member
         const user = await Memeber.findOne({ userId: userId });
@@ -108,6 +114,27 @@ export const viewproduct = async (req,res)=>{
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
+
+//Unborrow
+export const unborrowById = async(req,res,next)=>{
+    const {productId} = req.params;
+    // Inside your unborrowing route logic:
+const product = await Products.findById(productId);
+if (!product) {
+  return res.status(404).json({ message: "Product not found" });
+}
+
+// Update the product's borrowed status
+   product.isBorrowed = false;
+await product.save();
+  const prodcutunborrow = Borrow.findByIdAndUpdate({_id:productId},{$set:{availabilty:false}})
+
+    if(!prodcutunborrow){
+        res.status(404).json({message:"product not found"})
+    }
+    res.status(200).json({message:"Product unborrow successfully"})
+}
+ 
 
 
 //Borrowgetbyadmin
@@ -249,3 +276,4 @@ export const userByid = async (req,res,next)=>{
    return res.status(200).json(user)
 
 }
+
