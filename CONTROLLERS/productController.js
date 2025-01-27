@@ -65,55 +65,59 @@ export const viewproduct = async (req,res)=>{
       return  res.status(200).json(product)
  }
 
- export const borrowbyId = async (req, res, next) => {
-    const { userId, productId } = req.params; // Extract userId and productId from params
-
+ export const borrowbyId = async (req, res) => {
+    const { userId, productId } = req.params; // Extract userId and productId from the request body
+  
     try {
-        // Check if product exists
-        // Inside your borrowing route logic:
-const product = await Products.findById(productId);
-if (!product) {
-  return res.status(404).json({ message: "Product not found" });
-}
-
-// Update the product's borrowed status
-product.isBorrowed = true;
-await product.save();
-
-
-        // Check if user is a member
-        const user = await Memeber.findOne({ userId: userId });
+        // Check if the product exists and is available
+        const product = await Products.findById(productId);
+        if (!product || !product.availablity || product.isDeleted || product.isBorrowed) {
+            return res.status(400).json({ message: 'Product not available for borrowing.' });
+        }
+  
+        // Check if the user is a member
+        const member = await Memeber.findOne({ userId });
+        if (!member) {
+            return res.status(400).json({ message: 'User is not a member. Please take a membership.' });
+        }
+  
+        // Check if the user exists
+        const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "Take Membership" });
+            return res.status(404).json({ message: 'User not found.' });
         }
-
-        // Check if user exists
-        const users = await User.findById(userId);
-        if (!users) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
+  
+        // Set the borrowing duration and calculate the due date
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 14); // 14-day borrowing period
+  
         // Create a new Borrow entry
-        const newOrder = new Borrow({
+        const borrow = await Borrow.create({
             userId: user._id,
             productId: product._id,
             totalPrice: product.price, // Assuming product has a price field
-            status: "borrowed",
+            status: 'Borrowed',
+            dueDate,
         });
-
-        await newOrder.save();
-
-        // Update user borrow list
-        users.borrow.push(newOrder._id);
-        await users.save();
-
+  
+        // Update the product's borrowed status
+        product.isBorrowed = true;
+        product.availablity = false;
+        await product.save();
+  
+        // Update the user's borrow list
+        user.borrow.push(borrow._id);
+        await user.save();
+  
         // Respond with success message
-        return res.status(200).json({ message: "Product borrowed successfully" });
+        res.status(200).json({ message: 'Product borrowed successfully.', borrow });
     } catch (error) {
-        console.error("Error in borrowing product:", error);
-        return res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error('Error in borrowing product:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+
+  
 
 //Unborrow
 export const unborrowById = async(req,res,next)=>{
@@ -136,11 +140,61 @@ await product.save();
 }
  
 
+//Return the book 
+export const returnById = async (req, res) => {
+    const { userId, productId } = req.params;
+    console.log("Request received:", { userId, productId });
+
+    try {
+        const borrow = await Borrow.findOne({ userId, productId, status: 'Borrowed' });
+        console.log("Borrow record found:", borrow);
+
+        if (!borrow) {
+            return res.status(400).json({ message: 'No active borrow record found for this product and user.' });
+        }
+
+        borrow.status = 'Returned';
+        borrow.returnDate = new Date();
+        await borrow.save();
+        console.log("Borrow record updated.");
+
+        const product = await Products.findById(productId);
+        console.log("Product found:", product);
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+
+        product.isBorrowed = false;
+        product.availablity = true;
+        await product.save();
+        console.log("Product updated.");
+
+        const user = await User.findById(userId);
+        console.log("User found:", user);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        user.borrow = user.borrow.filter((id) => id.toString() !== borrow._id.toString());
+        await user.save();
+        console.log("User updated.");
+
+        res.status(200).json({ message: 'Product returned successfully.', borrow });
+    } catch (error) {
+        console.error('Error in returning product:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
+
+  
 
 //Borrowgetbyadmin
 export const admingetborrows = async(req,res,next)=>{
     const borrows = await Borrow.find().populate({
-        path:'productId',
+        path:'productId'
         
     });
     if(borrows.length===0){
@@ -150,29 +204,36 @@ export const admingetborrows = async(req,res,next)=>{
 }
 
 //Borrowgetbyuser
-export const userGetborrows = async (req, res, next) => {
+
+
+export const getUserBorrows = async (req, res, next) => {
     const { borrowId } = req.params;
 
     try {
-        // Find the user by ID and populate the borrow array, including the productId field within each borrow
+        // Find the user and populate the borrow records
         const userWithBorrows = await User.findById(borrowId)
             .populate({
                 path: 'borrow', // Populate the borrow array
                 populate: {
-                    path: 'productId', // Populate the productId within each borrow
+                    path: 'productId', // Populate the bookId within each borrow
+                    model: 'Products', // Specify the Book model
+                    select: 'title  name  image price  dueDate borrowDate author availableCopies', // Include specific fields
                 },
             });
 
         if (!userWithBorrows) {
-            return res.status(404).json({ message: "Borrow not found" });
+            return res.status(404).json({ message: 'User or borrow records not found.' });
         }
 
         return res.status(200).json(userWithBorrows);
     } catch (error) {
-        console.error("Error fetching borrow details:", error);
-        return res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error('Error fetching borrow details:', error);
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 };
+
+
+
 
 
 //Review of the product

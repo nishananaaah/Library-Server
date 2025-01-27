@@ -33,6 +33,10 @@ const productSchema =  new mongoose.Schema({
         type:Boolean,
         default:false
      },
+     isBorrowed :{
+      type :Boolean,
+      default:false
+     },
      quantity :{
         type :Number,
         default:1

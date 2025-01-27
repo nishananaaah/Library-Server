@@ -2,8 +2,12 @@ import User from "../MODELS/userModel.js";
 import userAuthjoi from "../VALIDATION/userjoi.js";
 import bcryptjs from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 //Register
+
+dotenv.config();
+const secretkey = process.env.GOOGLE_CLIENT_SECRET
 
 export const register = async (req,res,next)=>{
     const {value,error} = userAuthjoi.validate(req.body)
@@ -79,4 +83,6 @@ export const login = async (req, res, next) => {
       next(error);
     }
   };
+
+
   

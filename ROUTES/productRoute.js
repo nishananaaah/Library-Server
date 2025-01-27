@@ -1,6 +1,6 @@
 import express from "express";
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
-import { borrowbyId, productbyCategory, productByid, productSearch, reviewsofproduct, unborrowById, userByid, userGetborrows, viewAllusers, viewAuthors, viewproduct } from "../CONTROLLERS/productController.js";
+import { borrowbyId, getUserBorrows, productbyCategory, productByid, productSearch, returnById, reviewsofproduct, unborrowById, userByid,viewAllusers, viewAuthors, viewproduct } from "../CONTROLLERS/productController.js";
 import { memberPayment, payment, userMembership} from "../CONTROLLERS/paymentController.js";
 import { getMmebership } from "../CONTROLLERS/membershipController.js";
 
@@ -24,7 +24,8 @@ route.post('/membership',userMembership)
 //Borrows
 route.post('/:userId/borrow/:productId',TryCatchMiddleware(borrowbyId))//borrow
 route.post('/:userId/unborrow/:productId',TryCatchMiddleware(unborrowById))
-route.get('/borrow/:borrowId',TryCatchMiddleware(userGetborrows))
+route.post('/:userId/return/:productId',TryCatchMiddleware,(returnById))//return
+route.get('/borrow/:borrowId',TryCatchMiddleware(getUserBorrows))
 
 //Reviews
 route.post('/:userId/review/:productId',TryCatchMiddleware(reviewsofproduct))
