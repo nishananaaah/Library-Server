@@ -15,7 +15,7 @@ const memberSchema = new mongoose.Schema({
   endStart: {
     type: Date,
     required: true,
-    default: Date.now,
+   default: Date.now,
   },
   paymentId: {
     type: String,

@@ -143,11 +143,12 @@ await product.save();
 //Return the book 
 export const returnById = async (req, res) => {
     const { userId, productId } = req.params;
-    console.log("Request received:", { userId, productId });
 
+    // console.log("Request received:", { userId, productId });
+console.log("Borrow record updated.");
     try {
         const borrow = await Borrow.findOne({ userId, productId, status: 'Borrowed' });
-        console.log("Borrow record found:", borrow);
+        // console.log("Borrow record found:", borrow);
 
         if (!borrow) {
             return res.status(400).json({ message: 'No active borrow record found for this product and user.' });
@@ -156,7 +157,7 @@ export const returnById = async (req, res) => {
         borrow.status = 'Returned';
         borrow.returnDate = new Date();
         await borrow.save();
-        console.log("Borrow record updated.");
+        
 
         const product = await Products.findById(productId);
         console.log("Product found:", product);
@@ -192,16 +193,30 @@ export const returnById = async (req, res) => {
   
 
 //Borrowgetbyadmin
-export const admingetborrows = async(req,res,next)=>{
-    const borrows = await Borrow.find().populate({
-        path:'productId'
-        
-    });
-    if(borrows.length===0){
-       return res.status(404).json({message:"Borrows not found"})
+
+
+export const admingetborrows = async (req, res, next) => {
+  try {
+    const borrows = await Borrow.find()
+      .populate({
+        path: 'userId', // Populate user details
+        select: 'username email', // Only include username and email
+      })
+      .populate({
+        path: 'productId', // Populate product details
+        select: 'name author price image', // Only include specific fields
+      });
+
+    if (!borrows || borrows.length === 0) {
+      return res.status(404).json({ message: "Borrows not found" });
     }
-      return  res.status(200).json(borrows)
-}
+
+    return res.status(200).json(borrows);
+  } catch (error) {
+    console.error("Error fetching borrows:", error);
+    return res.status(500).json({ message: "An error occurred", error });
+  }
+};
 
 //Borrowgetbyuser
 
@@ -216,7 +231,7 @@ export const getUserBorrows = async (req, res, next) => {
                 path: 'borrow', // Populate the borrow array
                 populate: {
                     path: 'productId', // Populate the bookId within each borrow
-                    model: 'Products', // Specify the Book model
+                    model: 'Product', // Specify the Book model
                     select: 'title  name  image price  dueDate borrowDate author availableCopies', // Include specific fields
                 },
             });
