@@ -25,6 +25,9 @@ const productSchema =  new mongoose.Schema({
         type:String,
         required : true
      },
+     pdfUrl:{
+        type:String,
+     },
      availablity:{
         type : Boolean,
         default:true
