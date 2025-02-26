@@ -1,16 +1,13 @@
-const TryCatchMiddleware =(handler)=>{
-    return async (req,res,next)=>{
-     try{
-         await handler(req,res,next);
-     }catch(error){
-         console.error(error);
-         res.status(500).json({
-             status:'failier',
-             message:'error',
-             error_message:error.message
-         });
-     }
-     return 
+const TryCatchMiddleware = (handler) => async (req, res, next) => {
+    try {
+      await handler(req, res, next); // Only execute the handler once
+    } catch (error) {
+      console.error("Error in TryCatchMiddleware:", error);
+      if (!res.headersSent) {  // Prevent multiple responses
+        res.status(500).json({ message: "Internal server error", error: error.message });
+      }
     }
- }
- export default TryCatchMiddleware;
+  };
+  
+  export default TryCatchMiddleware;
+  

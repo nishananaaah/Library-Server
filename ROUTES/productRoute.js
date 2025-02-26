@@ -2,7 +2,7 @@ import express from "express";
 import TryCatchMiddleware from "../MIDDLEWARES/trycatchMiddleware.js";
 import { borrowbyId, getUserBorrows, productbyCategory, productByid, productSearch, returnById,unborrowById, userByid,viewAllusers, viewAuthors, viewproduct } from "../CONTROLLERS/productController.js";
 import { memberPayment, payment, userMembership} from "../CONTROLLERS/paymentController.js";
-import { getMmebership } from "../CONTROLLERS/membershipController.js";
+import { getMembershipByid, getMmebership } from "../CONTROLLERS/membershipController.js";
 import { addReview, getReview } from "../CONTROLLERS/reviewController.js";
 
 const route = express.Router();
@@ -18,6 +18,7 @@ route.get('/authors',TryCatchMiddleware(viewAuthors))
 //Payment Memebrship
 route.post('/payment/:id',TryCatchMiddleware(payment))
 route.post('/memberpayment',TryCatchMiddleware(memberPayment))//verify payment
+route.get('/membershipstatus/:userId',TryCatchMiddleware(getMembershipByid))
 
 //Membership
 route.post('/membership',userMembership)

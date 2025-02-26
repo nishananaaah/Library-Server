@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
 const memberSchema = new mongoose.Schema({
-  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Array of references
-  // membershipId: { type: mongoose.Schema.Types.ObjectId, ref: "Membership" }, // Reference to Membership
+  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }], // Single reference to User
   totalPrice: {
     type: Number,
     required: true,
@@ -12,14 +11,21 @@ const memberSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  endStart: {
+  endDate: { // Fixed incorrect field name
     type: Date,
     required: true,
-   default: Date.now,
+    default: function () {
+      return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // Default to 30 days later
+    },
   },
   paymentId: {
     type: String,
     required: true,
+  },
+  status: {
+    type: String,
+    enum: ["active", "expired", "canceled"], // Allowed values
+    default: "active", // New memberships start as "active"
   },
 });
 

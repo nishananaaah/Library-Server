@@ -46,21 +46,7 @@ dotenv.config();
     next(error);
   }
 };
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-const razorpay = new Razorpay({
+  const razorpay = new Razorpay({
   key_id: process.env.Razorpay_key_id,
   key_secret: process.env.Razorpay_key_secret,
 });
@@ -156,7 +142,7 @@ export const memberPayment = async (req, res) => {
         paymentId: razorpay_payment_id,
         orderId: razorpay_order_id,
         totalPrice: order.amount / 100,
-        status: "paid",
+        status: "active",
       });
   
       await newOrder.save();

@@ -7,5 +7,6 @@ const route = express.Router();
 route.post('/register', uploadImage, register);
 route.post('/login', login);
 route.post("/googlelogin", googleauth);
+// route.post('/verifyotp' , uploadImage,veryfyotp)
 
 export default route;
